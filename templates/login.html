@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	{% include 'layout.html' %}
+<head>
+<title>Books</title>
+<script>
+	var auth2;
+		gapi.load('auth2', function() {
+		auth2 = gapi.auth2.init({
+			client_id: '234835417335-ijdmm8h891rp75sm4a92klv6cn006e22.apps.googleusercontent.com',
+			scope: 'profile email'
+		});
+	});
+</script>
+
+</head>
+<body>
+	<h1>Login Page</h1>
+	<button  class="g-signin2" id="signinButton">Sign in with Google</button>
+	<p id="al"></p>
+	<script>
+			$('#signinButton').click(function() {
+    		auth2.grantOfflineAccess({'redirect_uri': 'postmessage'}).then(signInCallback);
+  			});
+	</script>
+	<p id="result"></p>
+	<script>
+		function signInCallback(aresult){
+				authResult = aresult;
+				console.log(authResult)
+				if (authResult['code']){
+					document.getElementById('signinButton').style.display = 'none';
+					$.ajax({
+      				type: 'POST',
+      				url: '/login',
+      				processData: false,
+      				data: authResult['code'],
+      				contentType: 'application/octet-stream; charset=utf-8',
+      				success: function(result) {
+        					// Handle or verify the server response if necessary.
+        					if (result) {
+        						//console.log(result)
+          					document.getElementById('result').innerHTML = 'Login Successful!</br>'+ result + '</br>Redirecting...';
+         						setTimeout(function() {
+          						window.location.href = "/index";
+         							}, 4000);
+
+      								} else if (authResult['error']) {
+    											document.getElementById('result').innerHTML = 'There was an error: ' + authResult['error'];
+  										} else {
+        									document.getElementById('result').innerHTML = 'Failed to make a server-side call. Check your configuration and console.';
+         									}
+      				}
+
+  				});
+			}
+
+		}
+	</script>
+</body>
+</html>

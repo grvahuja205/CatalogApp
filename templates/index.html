@@ -1,0 +1,8 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+	<h1>Books App</h1>
+	{% for book_type in book_types %}
+		{{ book_type.type }}<br>
+	{% endfor %}
+{% endblock %}
