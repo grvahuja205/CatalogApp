@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, String, Date, Boolean
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime, Boolean
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -16,7 +16,8 @@ class author(Base, UserMixin):
 	id = Column(Integer, primary_key = True)
 	name = Column(String(100), nullable = False)
 	email = Column(String(250), nullable = False)
-	password = Column(String(500), nullable = False)
+	password = Column(String(500))
+	gid = Column(Integer, unique=True)
 
 class book(Base):
 	__tablename__ = 'book'
