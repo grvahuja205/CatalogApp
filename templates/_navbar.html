@@ -1,5 +1,5 @@
 <nav class="navbar">
-{% if current_user.is_autenticated %}
+{% if current_user %}
 	<a href="{{ url_for('logout') }}" class="login-link">Logout</a>
 {% else %}
 	<a href="{{ url_for('login') }}" class="login-link">Login</a>
