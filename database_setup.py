@@ -28,6 +28,7 @@ class book(Base):
 	type_id = Column(Integer, ForeignKey('book_type.id'))
 	author = relationship(author)
 	author_id = Column(Integer, ForeignKey('author.id'))
+	date = Column(DateTime, nullable = False)
 
 
 engine = create_engine('sqlite:///catalog.db')
