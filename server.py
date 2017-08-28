@@ -54,11 +54,13 @@ def login():
 		#print CLIENT_ID
 		try:
 			oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='')
+			oauth_flow.params['access_type'] = 'offline'
 			oauth_flow.redirect_uri = 'postmessage'
 			credentials = oauth_flow.step2_exchange(code)
 			#print credentials
 			#print credentials.access_token
-		except FlowExchangeError:
+		except (FlowExchangeError , Exception) as u:
+			print u
 			response = make_response(json.dumps('Failed to upgrade the authorization code.'), 401)
 			response.headers['Content-Type'] = 'application/json'
 			return response
@@ -124,6 +126,26 @@ def login():
 	else:
 		return render_template('login.html')
 
+@app.route('/logout', methods = ['GET', 'POST'])
+def logout():
+	token = login_session.get('access_token')
+	if token:
+		print token
+		url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % token
+		h = httplib2.Http()
+		result = h.request(url, 'GET')[0]
+		print result
+		if result['status'] == '200':
+			del login_session['access_token']
+			logout_user()
+			flash('User Successfully Loged out')
+		else:
+			del login_session['access_token']
+			logout_user()
+			flash("User Loged Out, To completly Revoke Basic Access Kindly Access Your Google Console")
+	else:
+		flash("User No Logged In")
+	return redirect(url_for('mainPage'))
 
 if __name__ == '__main__':
 	app.debug = True
